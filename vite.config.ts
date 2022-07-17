@@ -10,5 +10,6 @@ export default defineConfig({
       '@': path.resolve('/src'),
     },
   },
+  base: '/notes-svelte/',
   server: {port: 4200}
 })
