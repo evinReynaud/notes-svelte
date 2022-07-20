@@ -1,13 +1,12 @@
-
 <script lang="ts">
-    import logo from '@/assets/svelte.svg'
+  import logo from "@/assets/svelte.svg";
 </script>
 
 <header class="global-header">
-    <div class="app-name">
-        <img src={logo} alt="Svelte Logo" class="logo"/>
-        <div class="title">Notes App</div>
-    </div>
+  <div class="app-name">
+    <img src={logo} alt="Svelte Logo" class="logo" />
+    <div class="title">Notes App</div>
+  </div>
 </header>
 
 <style lang="scss">

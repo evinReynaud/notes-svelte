@@ -1,132 +1,131 @@
 <script lang="ts">
-    // ---------------------------------------------------------
-    //  Global Imports
-    // ---------------------------------------------------------
+  // ---------------------------------------------------------
+  //  Global Imports
+  // ---------------------------------------------------------
 
-    import moment from 'moment'
-    import { createEventDispatcher, onMount } from 'svelte';
-    import Modal from '@/components/Modal.svelte'
-    import { formatDate } from '@/libs/utils'
+  import moment from "moment";
+  import { createEventDispatcher, onMount } from "svelte";
+  import Modal from "@/components/Modal.svelte";
+  import { formatDate } from "@/libs/utils";
 
-    // ---------------------------------------------------------
-    //  Props
-    // ---------------------------------------------------------
+  // ---------------------------------------------------------
+  //  Props
+  // ---------------------------------------------------------
 
-    export let id: number | undefined = undefined
-    export let title: string | undefined = undefined
-    export let date: string | undefined = undefined
-    export let content: string | undefined = undefined
-    export let isFavorite: boolean | undefined = undefined
-    export let tags: string[] | undefined = undefined
+  export let id: number;
+  export let title: string;
+  export let date: string;
+  export let content: string;
+  export let isFavorite: boolean;
+  export let tags: string[];
 
-    // ---------------------------------------------------------
-    //  Varaible Declarations
-    // ---------------------------------------------------------
+  // ---------------------------------------------------------
+  //  Varaible Declarations
+  // ---------------------------------------------------------
 
-    let tagString = tags && tags.length ? tags.join(',') : ''
+  let tagString = tags && tags.length ? tags.join(",") : "";
 
-    // Simple validation
-    $: canSave = Boolean(title && content)
+  // Simple validation
+  $: canSave = Boolean(title && content);
 
-    // ---------------------------------------------------------
-    //  Methods
-    // ---------------------------------------------------------
+  // ---------------------------------------------------------
+  //  Methods
+  // ---------------------------------------------------------
 
-    const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher();
 
-    /**
-     * Save the note if allowed by dispatching a save event
-     * with the new memo object
-     */
-    const saveNote = () => {
-        if (!canSave) return
+  /**
+   * Save the note if allowed by dispatching a save event
+   * with the new memo object
+   */
+  const saveNote = () => {
+    if (!canSave) return;
 
-        const newMemo = {
-            id,
-            title,
-            content,
-            date: moment().format('YYYYMMDDHHmmss'),
-            isFavorite,
-            tags: tagString.replace(/\s/g,'').split(',').filter(item => item)
-        }
+    const newMemo = {
+      id,
+      title,
+      content,
+      date: moment().format("YYYYMMDDHHmmss"),
+      isFavorite,
+      tags: tagString
+        .replace(/\s/g, "")
+        .split(",")
+        .filter((item) => item),
+    };
 
-        if (!newMemo.id) {
-            newMemo.id = moment().valueOf()
-        }
-
-        dispatch('save', newMemo)
+    if (!newMemo.id) {
+      newMemo.id = moment().valueOf();
     }
 
-    // ---------------------------------------------------------
-    //  TextArea Resizing
-    // ---------------------------------------------------------
+    dispatch("save", newMemo);
+  };
 
-    let textarea: HTMLElement
+  // ---------------------------------------------------------
+  //  TextArea Resizing
+  // ---------------------------------------------------------
 
-    const onInput = () => {
-        if (textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = `${textarea.scrollHeight}px`
-        }
+  let textarea: HTMLElement;
+
+  const onInput = () => {
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
     }
+  };
 
-    onMount(() => {
-        onInput()
-    })
+  onMount(() => {
+    onInput();
+  });
 </script>
 
-<Modal on:closeModal="{() => dispatch('close')}">
-    <div slot="title" class="title"> {id ? 'Edit' : 'Create' } Post</div>
+<Modal on:closeModal={() => dispatch("close")}>
+  <div slot="title" class="title">{id ? "Edit" : "Create"} Post</div>
 
-    <div slot="body" class="modal-body">
-        <label class="label" for="note-title">Title:</label>
-        <input bind:value={title} id="note-title" class="input" type="text" />
+  <div slot="body" class="modal-body">
+    <label class="label" for="note-title">Title:</label>
+    <input bind:value={title} id="note-title" class="input" type="text" />
 
-        <label class="label" for="note-tags">Tags:</label>
-        <input bind:value={tagString}  id="note-tags" class="input" type="text" />
+    <label class="label" for="note-tags">Tags:</label>
+    <input bind:value={tagString} id="note-tags" class="input" type="text" />
 
-        <label class="label" for="note-content">Content:</label>
-        <textarea
-                id="note-content"
-                bind:this={textarea}
-                bind:value={content}
-                class="input"
-                type="textarea"
-                on:input="{onInput}"
-        />
+    <label class="label" for="note-content">Content:</label>
+    <textarea
+      id="note-content"
+      bind:this={textarea}
+      bind:value={content}
+      class="input"
+      on:input={onInput}
+    />
 
-        {#if date}
-            <div class="label">Last Updated:</div>
-            <div class="text">{ formatDate(date) }</div>
-        {/if}
+    {#if date}
+      <div class="label">Last Updated:</div>
+      <div class="text">{formatDate(date)}</div>
+    {/if}
+  </div>
+
+  <div slot="footer" class="modal-footer">
+    <div class="delete-wrapper">
+      {#if id}
+        <button
+          class="button delete"
+          on:click|stopPropagation={() => dispatch("delete", id)}
+        >
+          Delete
+        </button>
+      {/if}
     </div>
-
-    <div slot="footer" class="modal-footer">
-        <div class="delete-wrapper">
-            {#if id}
-                <button
-                        class="button delete"
-                        on:click|stopPropagation="{() => dispatch('delete', id)}"
-                >
-                    Delete
-                </button>
-            {/if}
-        </div>
-        <div class="buttons-wrapper">
-            <button
-                    class="button save {!canSave? 'disabled' : ''}"
-                    on:click|stopPropagation="{saveNote}"
-            >
-                Save
-            </button>
-            <button
-                    class="button"
-                    on:click|stopPropagation="{() => dispatch('close')}"
-            >
-                Cancel
-            </button>
-        </div>
+    <div class="buttons-wrapper">
+      <button
+        class="button save {!canSave ? 'disabled' : ''}"
+        on:click|stopPropagation={saveNote}
+      >
+        Save
+      </button>
+      <button class="button" on:click|stopPropagation={() => dispatch("close")}>
+        Cancel
+      </button>
     </div>
+  </div>
 </Modal>
 
 <style lang="scss">

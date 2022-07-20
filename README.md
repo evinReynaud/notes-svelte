@@ -65,3 +65,78 @@ jobs:
           publish_dir: ./dist
 ```
 For more details see [the GitHub Actions documentation](https://docs.github.com/en/actions)
+
+## Add Eslint
+See [this article](https://codechips.me/eslint-svelte-typescript/)
+
+### Setup pretier
+```shell
+npm add -D prettier prettier-plugin-svelte
+```
+
+Create a file named `.prettierrc.cjs` in the root directory with the following content:
+```javascript
+module.exports = {
+  arrowParens: 'avoid',
+  singleQuote: true,
+  printWidth: 90,
+  plugins: ['prettier-plugin-svelte'],
+  semi: true,
+  svelteSortOrder: 'options-styles-scripts-markup',
+  svelteStrictMode: false,
+  svelteBracketNewLine: true,
+  svelteIndentScriptAndStyle: true,
+  trailingComma: 'none'
+}
+```
+
+### Setup Eslint
+```shell
+npm add -D eslint eslint-plugin-svelte3
+npm add -D @typescript-eslint/parser @typescript-eslint/eslint-plugin
+```
+
+Create a file named `.eslintrc.cjs` in the root directory with the following content:
+```javascript
+module.exports = {
+  parser: '@typescript-eslint/parser',
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking'
+  ],
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    tsconfigRootDir: __dirname,
+    project: ['./tsconfig.json'],
+    extraFileExtensions: ['.svelte']
+  },
+  env: {
+    es6: true,
+    browser: true
+  },
+  overrides: [
+    {
+      files: ['*.svelte'],
+      processor: 'svelte3/svelte3'
+    }
+  ],
+  settings: {
+    'svelte3/typescript': require('typescript'),
+    // ignore style tags in Svelte because of Tailwind CSS
+    // See https://github.com/sveltejs/eslint-plugin-svelte3/issues/70
+    'svelte3/ignore-styles': () => true
+  },
+  plugins: ['svelte3', '@typescript-eslint'],
+  ignorePatterns: ['node_modules']
+}
+```
+
+Add the following commands to the scripts section in your package.json.
+```
+"format": "prettier --write ./src/**/*.{js,svelte,html,ts}",
+"lint": "eslint './src/**/*.{js,ts,svelte}'",
+"lint:fix": "eslint --fix './src/**/*.{js,ts,svelte}'",
+"prelint": "npm run format"
+```

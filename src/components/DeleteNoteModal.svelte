@@ -1,47 +1,41 @@
 <script lang="ts">
-    // ---------------------------------------------------------
-    //  Global Imports
-    // ---------------------------------------------------------
-    import Modal from '@/components/Modal.svelte'
-    import { createEventDispatcher } from 'svelte';
+  // ---------------------------------------------------------
+  //  Global Imports
+  // ---------------------------------------------------------
+  import Modal from "@/components/Modal.svelte";
+  import { createEventDispatcher } from "svelte";
 
-    // ---------------------------------------------------------
-    //  Props
-    // ---------------------------------------------------------
+  // ---------------------------------------------------------
+  //  Props
+  // ---------------------------------------------------------
 
-    export let id: number | undefined = undefined
-    export let title: string | undefined = undefined
+  export let id: number | undefined = undefined;
+  export let title: string | undefined = undefined;
 
-    // ---------------------------------------------------------
-    //  Methods
-    // ---------------------------------------------------------
+  // ---------------------------------------------------------
+  //  Methods
+  // ---------------------------------------------------------
 
-    const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher();
 </script>
 
-<Modal
-        on:closeModal="{() => dispatch('close')}"
->
-    <div slot="title" class="title">Confirm Delete</div>
-    <div slot="body" class="modal-body">
-        Are you sure you want to delete "{title}" ?
-    </div>
+<Modal on:closeModal={() => dispatch("close")}>
+  <div slot="title" class="title">Confirm Delete</div>
+  <div slot="body" class="modal-body">
+    Are you sure you want to delete "{title}" ?
+  </div>
 
-    <div slot="footer" class="modal-footer">
-        <button
-                class="button delete"
-                on:click|stopPropagation="{() => dispatch('delete', id)}"
-        >
-            Delete
-        </button>
-        <button
-                class="button"
-                on:click|stopPropagation="{() => dispatch('close')}"
-        >
-            Cancel
-        </button>
-    </div>
-
+  <div slot="footer" class="modal-footer">
+    <button
+      class="button delete"
+      on:click|stopPropagation={() => dispatch("delete", id)}
+    >
+      Delete
+    </button>
+    <button class="button" on:click|stopPropagation={() => dispatch("close")}>
+      Cancel
+    </button>
+  </div>
 </Modal>
 
 <style lang="scss">

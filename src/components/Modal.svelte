@@ -1,32 +1,32 @@
 <script lang="ts">
-    // ---------------------------------------------------------
-    //  Global Imports
-    // ---------------------------------------------------------
+  // ---------------------------------------------------------
+  //  Global Imports
+  // ---------------------------------------------------------
 
-    import Fa from 'svelte-fa/src/fa.svelte'
-    import { faTimes } from '@fortawesome/free-solid-svg-icons';
-    import { createEventDispatcher } from 'svelte';
+  import Fa from "svelte-fa/src/fa.svelte";
+  import { faTimes } from "@fortawesome/free-solid-svg-icons";
+  import { createEventDispatcher } from "svelte";
 
-    // ---------------------------------------------------------
-    //  Methods
-    // ---------------------------------------------------------
+  // ---------------------------------------------------------
+  //  Methods
+  // ---------------------------------------------------------
 
-    const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher();
 </script>
 
 <div class="modal-overlay">
-    <div class="modal">
-        <div class="modal-header">
-            <slot name="title"></slot>
-            <div class="close-icon" on:click="{() => dispatch('closeModal')}">
-                <Fa icon={faTimes} color="#afaeae" size="1x" />
-            </div>
-        </div>
-
-        <slot name="body"></slot>
-
-        <slot name="footer"></slot>
+  <div class="modal">
+    <div class="modal-header">
+      <slot name="title" />
+      <div class="close-icon" on:click={() => dispatch("closeModal")}>
+        <Fa icon={faTimes} color="#afaeae" size="1x" />
+      </div>
     </div>
+
+    <slot name="body" />
+
+    <slot name="footer" />
+  </div>
 </div>
 
 <style lang="scss">
@@ -34,7 +34,7 @@
     background-color: white;
     padding: 15px 0;
     border-radius: 10px;
-    box-shadow: rgb(0 0 0 / 24%) 0px 3px 8px;
+    box-shadow: rgb(0 0 0 / 24%) 0 3px 8px;
 
     &-overlay {
       position: absolute;
